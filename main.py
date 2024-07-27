@@ -13,7 +13,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Self Driving Car Simulation")
 
 # Car
-car = Car(450, 600, 50, 80, (255, 0, 0), 5)
+car = Car(450, 600, 50, 80, (255, 0, 0))
 
 # Game loop
 running = True
