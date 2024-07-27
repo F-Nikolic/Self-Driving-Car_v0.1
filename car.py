@@ -12,10 +12,11 @@ class Car:
         self.image.fill(self.color)
 
         self.speed = 0
-        self.acceleration = 0.2
-        self.maxSpeed = 5
+        self.acceleration = 0.5
+        self.max_speed = 5
         self.friction = 0.05
         self.angle = 0
+        self.rotation_speed = 2
 
     def draw(self, screen):
         rotated_image = pygame.transform.rotate(self.image, self.angle)
@@ -28,10 +29,10 @@ class Car:
         if keysPressed[pygame.K_s]:
             self.speed -= self.acceleration
 
-        if self.speed > self.maxSpeed:
-            self.speed = self.maxSpeed
-        if self.speed < -self.maxSpeed/2:
-            self.speed = -self.maxSpeed/2
+        if self.speed > self.max_speed:
+            self.speed = self.max_speed
+        if self.speed < -self.max_speed/2:
+            self.speed = -self.max_speed/2
 
         if self.speed > 0:
             self.speed -= self.friction
@@ -40,10 +41,12 @@ class Car:
         if abs(self.speed) < self.friction: # Solves the car always moving forward by a small amount  
             self.speed = 0
 
-        if keysPressed[pygame.K_a]:
-            self.angle += 1
-        if keysPressed[pygame.K_d]:
-            self.angle -= 1
+        if self.speed != 0:
+            flip = 1 if self.speed > 0 else -1
+            if keysPressed[pygame.K_a]:
+                self.angle += self.rotation_speed*flip
+            if keysPressed[pygame.K_d]:
+                self.angle -= self.rotation_speed*flip
 
         self.x -= math.sin(math.radians(self.angle))*self.speed
         self.y -= math.cos(math.radians(self.angle))*self.speed
