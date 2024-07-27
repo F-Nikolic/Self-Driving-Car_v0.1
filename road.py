@@ -18,11 +18,17 @@ class Road:
         self.top = -infinity
         self.bottom = infinity
 
+        self.scroll = 0
+        self.scroll_speed = 0
+
+        self.dash_length = 20
+        self.dash_gap = 20
+
         top_left = {"x":self.left, "y":self.top}
         top_right = {"x":self.right, "y":self.top}
         bottom_left = {"x":self.left, "y":self.bottom}
         bottom_right = {"x":self.right, "y":self.bottom}
-        
+
         self.borders = [
             [top_left, bottom_left],
             [top_right, bottom_right]
@@ -43,13 +49,19 @@ class Road:
                 self.right,
                 i / self.lane_count
             )
-            y = 0
-            if i > 0 and i < self.lane_count:
-                while y < self.height:
-                    pygame.draw.line(screen, (255, 255, 255), (x, y), (x, y + 20), line_width)
-                    y += 40
-            else:
-                pygame.draw.line(screen, (255, 255, 255), (x, self.top), (x, self.bottom), line_width)
+            y = self.scroll % (self.dash_length + self.dash_gap) - self.dash_length - self.dash_gap
+            while y < self.height:
+                pygame.draw.line(screen, (255, 255, 255), (x, y), (x, y + self.dash_length), line_width)
+                y += self.dash_length + self.dash_gap
+        
+        for border in self.borders:
+            pygame.draw.line(screen, (255, 255, 255), (border[0]["x"], border[0]["y"]), (border[1]["x"], border[1]["y"]), line_width)
+
+        self.scroll += self.scroll_speed
+        if self.scroll >= self.dash_length + self.dash_gap:
+            self.scroll = 0
+           
+            
 
 
 
