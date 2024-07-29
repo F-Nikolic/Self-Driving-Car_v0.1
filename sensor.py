@@ -12,15 +12,15 @@ class Sensor:
         self.rays = []
         self.detections = []
 
-    def update(self, road_borders):
+    def update(self, road_borders, traffic):
         self.cast_rays()
         self.detections = []
         for ray in self.rays:
             self.detections.append(
-                self.get_reading(ray, road_borders)
+                self.get_reading(ray, road_borders, traffic)
             )
 
-    def get_reading(self, ray, road_borders):
+    def get_reading(self, ray, road_borders, traffic):
         collisions = []
 
         for border in road_borders:
@@ -33,14 +33,24 @@ class Sensor:
             if collision:
                 collisions.append(collision)
 
+        for traffic_car in traffic:
+            poly = traffic_car.polygon
+            for i in range(len(poly)):
+                collision = Utils.get_intersection(
+                    ray[0], 
+                    ray[1],
+                    poly[i],
+                    poly[(i+1)%len(poly)] 
+                )
+                if collision:
+                    collisions.append(collision)
+
         if len(collisions) == 0:
             return None
         else:
             return min(collisions, key=lambda x: x["offset"]) #returns the collision with the smallest offset
             #offsets = map(lambda x: x.offset, collisions)
             #smallest_offset = min(collisions, key=lambda x: x.offset).offset
-
-
 
     def cast_rays(self):
         self.rays = []

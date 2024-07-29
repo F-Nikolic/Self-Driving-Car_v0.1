@@ -25,21 +25,28 @@ class Car:
         self.damaged = False
 
         self.controls = Controls(control_type)
-        self.sensor = Sensor(self)
 
-    def update(self, road_borders):
+        if control_type != "DUMMY":
+            self.sensor = Sensor(self)
+
+    def update(self, road_borders, traffic):
         if not self.damaged:
             self.move()
             self.polygon = self.create_polygon()
-            self.damaged = self.check_damaged(road_borders)
+            self.damaged = self.check_damaged(road_borders, traffic)
         else:
             self.speed = 0
         self.controls.handle_controls()
-        self.sensor.update(road_borders)
 
-    def check_damaged(self, road_borders):
+        if hasattr(self, 'sensor'):
+            self.sensor.update(road_borders, traffic)
+
+    def check_damaged(self, road_borders, traffic):
         for border in road_borders:
             if Utils.polys_intersect(self.polygon, border):
+                return True
+        for traffic_car in traffic:
+            if Utils.polys_intersect(self.polygon, traffic_car.polygon):
                 return True
         return False
 
@@ -88,7 +95,8 @@ class Car:
         
         pygame.draw.polygon(screen, self.color, poly_points)
 
-        self.sensor.draw(screen)
+        if hasattr(self, 'sensor'): 
+            self.sensor.draw(screen)
         
     def move(self):
         if self.controls.forward:

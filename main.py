@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from car import Car
 from road import Road
 
@@ -24,7 +25,9 @@ car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT", 5)
 
 # Traffic
 traffic = [
-    Car(road.get_lane_center(1, 30), 300, 30, 50, (0, 0, 255), "DUMMY"),
+    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
 ]
 
 # Game loop
@@ -37,9 +40,9 @@ while running:
             running = False
 
     for traffic_car in traffic:
-        traffic_car.update(road.borders)
+        traffic_car.update(road.borders,[])
 
-    car.update(road.borders)
+    car.update(road.borders, traffic)
 
     road.scroll_speed = car.speed
 
