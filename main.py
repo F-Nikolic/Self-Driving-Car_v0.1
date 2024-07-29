@@ -34,7 +34,6 @@ while running:
 
     keys_pressed = pygame.key.get_pressed()
 
-
     car.update(keys_pressed, road.borders)
 
     road.scroll_speed = car.speed

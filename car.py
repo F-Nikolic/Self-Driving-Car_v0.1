@@ -23,12 +23,42 @@ class Car:
 
     def update(self, keys_pressed, road_borders):
         self.move(keys_pressed)
+        self.polygon = self.create_polygon()
         self.sensor.update(road_borders)
 
+    def create_polygon(self):
+        points = []
+        rad = math.hypot(self.width, self.height)/2
+        alpha = math.atan2(self.width, self.height)
+
+        x_center = self.x + self.width/2
+        y_center = self.y + self.height/2
+
+        points.append(
+            (x_center - math.sin(math.radians(self.angle)-alpha)*rad, 
+             y_center - math.cos(math.radians(self.angle)-alpha)*rad)
+        )
+        points.append(
+            (x_center - math.sin(math.radians(self.angle)+alpha)*rad, 
+             y_center - math.cos(math.radians(self.angle)+alpha)*rad)
+        )
+        points.append(
+            (x_center - math.sin(math.pi+math.radians(self.angle)-alpha)*rad, 
+             y_center - math.cos(math.pi+math.radians(self.angle)-alpha)*rad)
+        )
+        points.append(
+            (x_center - math.sin(math.pi+math.radians(self.angle)+alpha)*rad, 
+             y_center - math.cos(math.pi+math.radians(self.angle)+alpha)*rad)
+        )
+        return points
+        
     def draw(self, screen):
+        '''
         rotated_image = pygame.transform.rotate(self.image, self.angle)
         new_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
         screen.blit(rotated_image, new_rect)
+        '''
+        pygame.draw.polygon(screen, self.color, self.polygon)
 
         self.sensor.draw(screen)
         
