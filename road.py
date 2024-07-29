@@ -42,7 +42,6 @@ class Road:
         line_width = 5
         pygame.draw.rect(screen, (169, 169, 169), (self.x, 0, self.width, self.height))
        
-
         for i in range(self.lane_count + 1):
             x = Utils.lerp(
                 self.left, 

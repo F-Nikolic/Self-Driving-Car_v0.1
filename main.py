@@ -20,11 +20,11 @@ LINE_CENTER = SCREEN_WIDTH/2
 road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
 # Car
-car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT")
+car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT", 5)
 
 # Traffic
 traffic = [
-    Car(road.get_lane_center(1, 30), 100, 30, 50, (0, 0, 255), "DUMMY")
+    Car(road.get_lane_center(1, 30), 300, 30, 50, (0, 0, 255), "DUMMY"),
 ]
 
 # Game loop
@@ -48,6 +48,7 @@ while running:
     road.draw(screen)
     for traffic_car in traffic:
         traffic_car.draw(screen)
+
     car.draw(screen)
 
     pygame.display.flip()

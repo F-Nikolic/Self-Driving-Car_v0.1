@@ -5,9 +5,10 @@ from utils import Utils
 from controls import Controls
 
 class Car:
-    def __init__(self, x, y, width, height, color, control_type):
+    def __init__(self, x, y, width, height, color, control_type, max_speed = 3):
         self.x = x
         self.y = y
+        self.fixed_y = y
         self.width = width
         self.height = height
         self.color = color
@@ -17,7 +18,7 @@ class Car:
 
         self.speed = 0
         self.acceleration = 0.5
-        self.max_speed = 5
+        self.max_speed = max_speed
         self.friction = 0.05
         self.angle = 0
         self.rotation_speed = 2
@@ -78,9 +79,7 @@ class Car:
 
         if self.damaged:
             self.color = (255, 0, 0)
-        else:
-            self.color = (0, 255, 0)
-
+    
         poly_points = [
             (self.polygon[0]["x"], self.polygon[0]["y"]), 
             (self.polygon[1]["x"], self.polygon[1]["y"]),
