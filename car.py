@@ -2,14 +2,16 @@ import pygame
 import math
 from sensor import Sensor
 from utils import Utils
+from controls import Controls
 
 class Car:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color, control_type):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
+        self.control_type = control_type
         self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         self.image.fill(self.color)
 
@@ -22,15 +24,17 @@ class Car:
 
         self.damaged = False
 
+        self.controls = Controls(control_type)
         self.sensor = Sensor(self)
 
-    def update(self, keys_pressed, road_borders):
+    def update(self, road_borders):
         if not self.damaged:
-            self.move(keys_pressed)
+            self.move()
             self.polygon = self.create_polygon()
             self.damaged = self.check_damaged(road_borders)
         else:
             self.speed = 0
+        self.controls.handle_controls()
         self.sensor.update(road_borders)
 
     def check_damaged(self, road_borders):
@@ -88,10 +92,10 @@ class Car:
 
         self.sensor.draw(screen)
         
-    def move(self, keysPressed):
-        if keysPressed[pygame.K_w]:
+    def move(self):
+        if self.controls.forward:
             self.speed += self.acceleration
-        if keysPressed[pygame.K_s]:
+        if self.controls.reverse:
             self.speed -= self.acceleration
 
         if self.speed > self.max_speed:
@@ -108,9 +112,9 @@ class Car:
 
         if self.speed != 0:
             flip = 1 if self.speed > 0 else -1
-            if keysPressed[pygame.K_a]:
+            if self.controls.left:
                 self.angle += self.rotation_speed*flip
-            if keysPressed[pygame.K_d]:
+            if self.controls.right:
                 self.angle -= self.rotation_speed*flip
 
         self.x -= math.sin(math.radians(self.angle))*self.speed

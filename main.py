@@ -20,7 +20,12 @@ LINE_CENTER = SCREEN_WIDTH/2
 road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
 # Car
-car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0))
+car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT")
+
+# Traffic
+traffic = [
+    Car(road.get_lane_center(1, 30), 100, 30, 50, (0, 0, 255), "DUMMY")
+]
 
 # Game loop
 running = True
@@ -31,15 +36,18 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    keys_pressed = pygame.key.get_pressed()
+    for traffic_car in traffic:
+        traffic_car.update(road.borders)
 
-    car.update(keys_pressed, road.borders)
+    car.update(road.borders)
 
     road.scroll_speed = car.speed
 
     screen.fill(SCREEN_BGCOLOR)
 
     road.draw(screen)
+    for traffic_car in traffic:
+        traffic_car.draw(screen)
     car.draw(screen)
 
     pygame.display.flip()
