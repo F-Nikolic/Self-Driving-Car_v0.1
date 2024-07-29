@@ -33,6 +33,7 @@ class Car:
         angle (int): The current angle of the car
         roation_speed (int): The speed by which the car can rotate
         damaged (bool): If the car is damaged/has crashed or not
+        use_brain (bool): If our car is an agent it will drive itself instead of letting the user drive
         controls (Controls): The controls of the car
 
         sensor (Sensor): ONLY IF THE CAR IS NOT A "DUMMY" CAR
@@ -58,6 +59,8 @@ class Car:
 
         self.damaged = False
 
+        self.use_brain = control_type is "AGENT"
+
         self.controls = Controls(control_type)
 
         if control_type != "DUMMY":
@@ -69,7 +72,8 @@ class Car:
     def update(self, road_borders, traffic):
         """
         Updates the car on every frame by checking if it is damaged and if not then creating its polygon and moving it.
-        If the car has sensors then it also updates its sensors on every frame
+        If the car has sensors then it also updates its sensors on every frame as well as sending the
+        offsets of the detections as signals to the neural network to receive the outputs and moving the car
 
         Args:
             road_borders (list): List of the borders on the road
@@ -86,9 +90,19 @@ class Car:
 
         if hasattr(self, 'sensor'):
             self.sensor.update(road_borders, traffic)
+
+            # Get the offsets and send them as signals to the neural network
             offsets = [0 if x is None else 1 - x["offset"] for x in self.sensor.detections] # If object is far away, neurons receive low values and higher values close to 1 if the object is close 
+            # Feed forward the signals and receive proper outputs to control the car
             outputs = NeuralNetwork.feed_forward(offsets, self.brain)
             print(outputs)
+
+            # If the car is an agent then control the car using the received outputs from the NN
+            if self.brain:
+                self.controls.forward = outputs[0]
+                self.controls.left = outputs[1]
+                self.controls.right = outputs[2]
+                self.controls.reverse = outputs[3]
     
 
 

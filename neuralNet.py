@@ -32,10 +32,10 @@ class Level:
     def randomize(level):
         for i in range(len(level.inputs)):
             for j in range(len(level.outputs)): 
-                level.weights[i][j] = random.randrange(-1, 1) # Negative values to help decide which way to turn 
+                level.weights[i][j] = random.randint(-1, 1) # Negative values to help decide which way to turn 
         
         for i in range(len(level.biases)):
-            level.biases[i] = random.randrange(-1, 1)
+            level.biases[i] = random.randint(-1, 1)
 
     def feed_forward(given_inputs, level):
         for i in range(len(level.inputs)):
