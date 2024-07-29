@@ -3,6 +3,7 @@ import math
 from sensor import Sensor
 from utils import Utils
 from controls import Controls
+from neuralNet import NeuralNetwork
 
 class Car:
     """
@@ -35,6 +36,7 @@ class Car:
         controls (Controls): The controls of the car
 
         sensor (Sensor): ONLY IF THE CAR IS NOT A "DUMMY" CAR
+        brain (NeuralNetwork): ONLY IF THE CAR IS AN "AGENT" CAR
     """
 
     def __init__(self, x, y, width, height, color, control_type, max_speed = 3):
@@ -60,6 +62,9 @@ class Car:
 
         if control_type != "DUMMY":
             self.sensor = Sensor(self)
+            self.brain = NeuralNetwork(
+                [self.sensor.ray_count, 6, 4]
+            )
 
     def update(self, road_borders, traffic):
         """
@@ -81,6 +86,11 @@ class Car:
 
         if hasattr(self, 'sensor'):
             self.sensor.update(road_borders, traffic)
+            offsets = [0 if x is None else 1 - x["offset"] for x in self.sensor.detections] # If object is far away, neurons receive low values and higher values close to 1 if the object is close 
+            outputs = NeuralNetwork.feed_forward(offsets, self.brain)
+            print(outputs)
+    
+
 
     def check_damaged(self, road_borders, traffic):
         """
