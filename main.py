@@ -22,7 +22,6 @@ road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 # Car
 car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0))
 
-
 # Game loop
 running = True
 clock = pygame.time.Clock()
