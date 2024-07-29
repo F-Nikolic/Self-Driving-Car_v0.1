@@ -34,9 +34,10 @@ while running:
 
     keys_pressed = pygame.key.get_pressed()
 
-    movement_speed = car.move(keys_pressed)
 
-    road.scroll_speed = movement_speed
+    car.update(keys_pressed, road.borders)
+
+    road.scroll_speed = car.speed
 
     screen.fill(SCREEN_BGCOLOR)
 

@@ -21,6 +21,10 @@ class Car:
 
         self.sensor = Sensor(self)
 
+    def update(self, keys_pressed, road_borders):
+        self.move(keys_pressed)
+        self.sensor.update(road_borders)
+
     def draw(self, screen):
         rotated_image = pygame.transform.rotate(self.image, self.angle)
         new_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
@@ -56,8 +60,5 @@ class Car:
         self.x -= math.sin(math.radians(self.angle))*self.speed
         #self.y -= math.cos(math.radians(self.angle))*self.speed 
 
-        self.sensor.update()
-
-        return self.speed
 
         
