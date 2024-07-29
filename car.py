@@ -8,7 +8,6 @@ class Car:
     def __init__(self, x, y, width, height, color, control_type, max_speed = 3):
         self.x = x
         self.y = y
-        self.fixed_y = y
         self.width = width
         self.height = height
         self.color = color
@@ -117,7 +116,9 @@ class Car:
                 self.angle -= self.rotation_speed*flip
 
         self.x -= math.sin(math.radians(self.angle))*self.speed
-        #self.y -= math.cos(math.radians(self.angle))*self.speed 
+
+        if self.control_type == "DUMMY":
+            self.y -= math.cos(math.radians(self.angle))*self.speed 
 
 
         

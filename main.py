@@ -47,6 +47,7 @@ while running:
 
     road.draw(screen)
     for traffic_car in traffic:
+        traffic_car.y += road.scroll_speed #Simulates the traffif car moving, achieving the effect of both cars moving and being able to overtake
         traffic_car.draw(screen)
 
     car.draw(screen)
