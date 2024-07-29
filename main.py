@@ -4,63 +4,72 @@ import random
 from car import Car
 from road import Road
 
-pygame.init()
+def main():
+    """
+    The main function that initializes the game, sets up the screen and objects, and runs the game loop.
+    """
 
-# Screen settings
-SCREEN_HEIGHT = 700
-SCREEN_WIDTH = 900
-SCREEN_BGCOLOR = (100, 100, 100)
+    pygame.init()
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Self Driving Car Simulation")
+    # Screen settings
+    SCREEN_HEIGHT = 700
+    SCREEN_WIDTH = 900
+    SCREEN_BGCOLOR = (100, 100, 100)
 
-# Road
-ROAD_WIDTH = SCREEN_WIDTH/3
-ROAD_CENTER = (SCREEN_WIDTH - ROAD_WIDTH)//2
-LINE_CENTER = SCREEN_WIDTH/2
-road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Self Driving Car Simulation")
 
-# Car
-car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT", 5)
+    # Road instance
+    ROAD_WIDTH = SCREEN_WIDTH/3
+    ROAD_CENTER = (SCREEN_WIDTH - ROAD_WIDTH)//2
+    LINE_CENTER = SCREEN_WIDTH/2
+    road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
-# Traffic
-traffic = [
-    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
-    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
-    Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
-]
+    # Car agent instance
+    car = Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0), "AGENT", 5)
 
-# Game loop
-running = True
-clock = pygame.time.Clock()
+    # Traffic instance
+    traffic = [
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+    ]
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    # Game loop
+    running = True
+    clock = pygame.time.Clock()
 
-    for traffic_car in traffic:
-        traffic_car.update(road.borders,[])
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    car.update(road.borders, traffic)
+        for traffic_car in traffic:
+            traffic_car.update(road.borders,[])
 
-    road.scroll_speed = car.speed
+        car.update(road.borders, traffic)
 
-    screen.fill(SCREEN_BGCOLOR)
+        road.scroll_speed = car.speed
 
-    road.draw(screen)
-    for traffic_car in traffic:
-        traffic_car.y += road.scroll_speed #Simulates the traffif car moving, achieving the effect of both cars moving and being able to overtake
-        traffic_car.draw(screen)
+        screen.fill(SCREEN_BGCOLOR)
 
-    car.draw(screen)
+        road.draw(screen)
 
-    pygame.display.flip()
+        for traffic_car in traffic:
+            traffic_car.y += road.scroll_speed # Simulates overtaking effect by adjusting the traffic cars y position relevant to the scroll speed
+            traffic_car.draw(screen)
 
-    clock.tick(60)
+        car.draw(screen)
 
-# Quit program
-pygame.quit
-sys.exit()
+        pygame.display.flip()
+
+        clock.tick(60)
+
+    # Quit program
+    pygame.quit
+    sys.exit()
+
+if __name__ == '__main__':
+    main()
 
 

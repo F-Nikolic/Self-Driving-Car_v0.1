@@ -5,6 +5,38 @@ from utils import Utils
 from controls import Controls
 
 class Car:
+    """
+    Class that initiates and manages the car object. 
+
+    Args:
+        x (int): The x coordinate of the car on the screen
+        y (int): The y coordinate of the car on the screen
+        width (int): The width of the car
+        height (int): The height of the car
+        color (tuple): The color of the car
+        control_type (str): The type of car (DUMMY/AGENT)
+        max_speed (int): The max speed the car can go; by default 3
+
+    Attributes:
+        x (int): The x coordinate of the car on the screen
+        y (int): The y coordinate of the car on the screen
+        width (int): The width of the car
+        height (int): The height of the car
+        color (tuple): The color of the car
+        control_type (str): The type of car (DUMMY/AGENT)
+        image (Surface): The surface of the car
+        speed (int): The current speed of the car
+        acceleration (int): The acceleration of the car
+        max_speed (int): The max speed the car can go; by default 3
+        friction (int): The friction of car
+        angle (int): The current angle of the car
+        roation_speed (int): The speed by which the car can rotate
+        damaged (bool): If the car is damaged/has crashed or not
+        controls (Controls): The controls of the car
+
+        sensor (Sensor): ONLY IF THE CAR IS NOT A "DUMMY" CAR
+    """
+
     def __init__(self, x, y, width, height, color, control_type, max_speed = 3):
         self.x = x
         self.y = y
@@ -30,6 +62,15 @@ class Car:
             self.sensor = Sensor(self)
 
     def update(self, road_borders, traffic):
+        """
+        Updates the car on every frame by checking if it is damaged and if not then creating its polygon and moving it.
+        If the car has sensors then it also updates its sensors on every frame
+
+        Args:
+            road_borders (list): List of the borders on the road
+            traffic (list): List of the traffic cars on the road
+        """
+
         if not self.damaged:
             self.move()
             self.polygon = self.create_polygon()
@@ -42,6 +83,18 @@ class Car:
             self.sensor.update(road_borders, traffic)
 
     def check_damaged(self, road_borders, traffic):
+        """
+        Checks for collisions of the agent car with other traffic cars and the road border
+
+        Args:
+            road_borders (list): List of the borders on the road
+            traffic (list): List of the traffic cars on the road
+
+        Returns:
+            bool: True if there is an collision
+            bool: False if there is none
+        """
+
         for border in road_borders:
             if Utils.polys_intersect(self.polygon, border):
                 return True
@@ -51,10 +104,18 @@ class Car:
         return False
 
     def create_polygon(self):
-        points = []
-        rad = math.hypot(self.width, self.height)/2
-        alpha = math.atan2(self.width, self.height)
+        """
+        Calculates and stores the corner points of the car to create the polygon. Used later for calculating intersections and drawing the car
 
+        Returns:
+            list: The corner points of the car polygon
+        """
+
+        points = []
+        rad = math.hypot(self.width, self.height)/2 # Since the car is a rectangle we can simply get the hypothenuse and half it to get the "radius" from the center to each corner
+        alpha = math.atan2(self.width, self.height) 
+
+        # The x and v values of the cars position when creating in pygame are not centered so we center it here seperately to make calculations easier
         x_center = self.x + self.width/2
         y_center = self.y + self.height/2
 
@@ -78,9 +139,10 @@ class Car:
         
     def draw(self, screen):
         '''
-        rotated_image = pygame.transform.rotate(self.image, self.angle)
-        new_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
-        screen.blit(rotated_image, new_rect)
+        Draws the car on the screen using its corner points, as well as the sensors if the car has them
+
+        Args:
+            screen (Surface): The surface to draw the car on
         '''
 
         if self.damaged:
@@ -93,22 +155,29 @@ class Car:
             (self.polygon[3]["x"], self.polygon[3]["y"])
             ]
         
-        pygame.draw.polygon(screen, self.color, poly_points)
+        pygame.draw.polygon(screen, self.color, poly_points) 
 
         if hasattr(self, 'sensor'): 
             self.sensor.draw(screen)
         
     def move(self):
+        """
+        Moves and rotates the car based on the controls by updating its position and speed
+        """
+
+        # Accelerates the car 
         if self.controls.forward:
             self.speed += self.acceleration
         if self.controls.reverse:
             self.speed -= self.acceleration
 
+        # Caps the speed
         if self.speed > self.max_speed:
             self.speed = self.max_speed
         if self.speed < -self.max_speed/2:
             self.speed = -self.max_speed/2
 
+        # Adds friction
         if self.speed > 0:
             self.speed -= self.friction
         if self.speed < 0:
@@ -116,6 +185,7 @@ class Car:
         if abs(self.speed) < self.friction: # Solves the car always moving forward by a small amount  
             self.speed = 0
 
+        # Calculates the rotation angle
         if self.speed != 0:
             flip = 1 if self.speed > 0 else -1
             if self.controls.left:
@@ -123,8 +193,11 @@ class Car:
             if self.controls.right:
                 self.angle -= self.rotation_speed*flip
 
+        # Updates the position of the car based on angle and speed
         self.x -= math.sin(math.radians(self.angle))*self.speed
 
+        # Moves the dummy car by updating its y position
+        # If we update it for the agents car too then the car could move out of the screen so we essentially lock the y position for it
         if self.control_type == "DUMMY":
             self.y -= math.cos(math.radians(self.angle))*self.speed 
 
