@@ -29,7 +29,7 @@ def main():
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instances
-    n = 100
+    n = 200
     cars = generate_cars(n, road, "AGENT")
     best_car = cars[0]
 
@@ -37,17 +37,24 @@ def main():
     if os.path.exists("model.json"):
         for i in range(0, len(cars)):
             NeuralNetwork.load_model(cars[i], "model.json")
-        if i != 0:
-            NeuralNetwork.mutate(cars[i].brain, 0.1)
+        if i > 0:
+            NeuralNetwork.mutate(cars[i].brain, 0.2)
 
     # Traffic instance
     traffic = [
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY")
+        Car(road.get_lane_center(0, 30), 500, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(0, 30), 100, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(1, 30), 800, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(2, 30), 500, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(2, 30), 300, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(1, 30), 1100, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(1, 30), 700, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(0, 30), 1200, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(0, 30), 100, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(1, 30), -500, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(2, 30), -300, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(2, 30), -200, 30, 50, "DUMMY"),
+        Car(road.get_lane_center(1, 30), 300, 30, 50, "DUMMY")
     ]
     
     # Button instance
@@ -88,10 +95,10 @@ def main():
 
         for traffic_car in traffic:
             traffic_car.y += road.scroll_speed # Simulates overtaking effect by adjusting the traffic cars y position relevant to the scroll speed
-            traffic_car.draw(screen, (0, 0, 255))
+            traffic_car.draw(screen, (0, 0, 255,0))
         for i in range(1, len(cars)):
             cars[i].y += road.scroll_speed
-            cars[i].draw(screen, (255, 255, 0))
+            cars[i].draw(screen, (255, 255, 0, 150))
         best_car.draw(screen, (0, 255, 0), True)
 
         save_button.draw(screen)
@@ -127,7 +134,7 @@ def generate_cars(n, road, car_type):
         if car_type == "DUMMY":
             cars.append(Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, "DUMMY"))
         elif car_type == "AGENT":
-            cars.append(Car(road.get_lane_center(random.randrange(0, 2), 30), 600, 30, 50, "AGENT", 5))
+            cars.append(Car(road.get_lane_center(1, 30), 600, 30, 50, "AGENT", 5))
     
     return cars
 
