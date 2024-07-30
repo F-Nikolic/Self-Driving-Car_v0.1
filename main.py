@@ -27,14 +27,12 @@ def main():
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instances
-    n = 100
+    n = 5
     cars = generate_cars(n, road, "AGENT")
 
     # Traffic instance
     traffic = [
-        #Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
-        #Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, "DUMMY"),
     ]
 
     # Game loop
@@ -52,11 +50,16 @@ def main():
 
         for traffic_car in traffic:
             traffic_car.update(road.borders,[])
-
         for agent_car in cars:
             agent_car.update(road.borders, traffic)
+        
+        # Find the minimum y value among all cars
+        min_y = min(car.y for car in cars)
 
-        road.scroll_speed = cars[0].speed
+        # Find the car(s) with the minimum y value
+        best_car = next(car for car in cars if car.y == min_y)
+
+        road.scroll_speed = best_car.speed
 
         screen.fill(SCREEN_BGCOLOR)
 
@@ -64,12 +67,13 @@ def main():
 
         for traffic_car in traffic:
             traffic_car.y += road.scroll_speed # Simulates overtaking effect by adjusting the traffic cars y position relevant to the scroll speed
-            traffic_car.draw(screen)
-        for agent_car in cars:
-            agent_car.draw(screen)
+            traffic_car.draw(screen, (0, 0, 255))
+        for i in range(1, len(cars)):
+            cars[i].draw(screen, (255, 255, 0))
+        best_car.draw(screen, (0, 255, 0), True)
 
         # Debug and visualization for the neural network
-        NeuralNetwork.draw_debug(screen, ROAD_WIDTH+70, SCREEN_WIDTH/1.75, SCREEN_HEIGHT, cars[0].brain)
+        NeuralNetwork.draw_debug(screen, ROAD_WIDTH+70, SCREEN_WIDTH/1.75, SCREEN_HEIGHT, best_car.brain)
 
         pygame.display.flip()
 
@@ -96,9 +100,9 @@ def generate_cars(n, road, car_type):
     for i in range(n+1):
 
         if car_type == "DUMMY":
-            cars.append(Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, (random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255)), "DUMMY"))
+            cars.append(Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, "DUMMY"))
         elif car_type == "AGENT":
-            cars.append(Car(road.get_lane_center(0, 30), 600, 30, 50, (0, 255, 0, 200), "AGENT", 5))
+            cars.append(Car(road.get_lane_center(random.randrange(0, 2), 30), 600, 30, 50, "AGENT", 5))
     
     return cars
 

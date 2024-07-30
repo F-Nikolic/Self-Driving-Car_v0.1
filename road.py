@@ -72,7 +72,7 @@ class Road:
         Returns:
             int: x position of the car depending on the lane and its width
         """
-
+        
         lane_width = self.width/self.lane_count
         return (self.left + lane_width/2 + min(lane_index, self.lane_count-1) * lane_width)-car_size/2
 
@@ -83,7 +83,7 @@ class Road:
         Args:
             screen (Surface): The surface on which to draw the road on
         """
-        
+
         line_width = 5
 
         # Draws the road itself

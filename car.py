@@ -14,7 +14,6 @@ class Car:
         y (int): The y coordinate of the car on the screen
         width (int): The width of the car
         height (int): The height of the car
-        color (tuple): The color of the car
         control_type (str): The type of car (DUMMY/AGENT)
         max_speed (int): The max speed the car can go; by default 3
 
@@ -23,7 +22,6 @@ class Car:
         y (int): The y coordinate of the car on the screen
         width (int): The width of the car
         height (int): The height of the car
-        color (tuple): The color of the car
         control_type (str): The type of car (DUMMY/AGENT)
         image (Surface): The surface of the car
         speed (int): The current speed of the car
@@ -40,12 +38,11 @@ class Car:
         brain (NeuralNetwork): ONLY IF THE CAR IS AN "AGENT" CAR
     """
 
-    def __init__(self, x, y, width, height, color, control_type, max_speed = 3):
+    def __init__(self, x, y, width, height, control_type, max_speed = 3):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.color = color
         self.control_type = control_type
 
         self.speed = 0
@@ -157,7 +154,7 @@ class Car:
         )
         return points
         
-    def draw(self, screen):
+    def draw(self, screen, new_color, draw_sensor=False):
         '''
         Draws the car on the screen using its corner points, as well as the sensors if the car has them
 
@@ -165,8 +162,9 @@ class Car:
             screen (Surface): The surface to draw the car on
         '''
 
+        color = new_color
         if self.damaged:
-            self.color = (255, 0, 0, 128)
+            color = (255, 0, 0, 128)
     
         poly_points = [
             (self.polygon[0]["x"], self.polygon[0]["y"]), 
@@ -175,9 +173,9 @@ class Car:
             (self.polygon[3]["x"], self.polygon[3]["y"])
             ]
         
-        pygame.draw.polygon(screen, self.color, poly_points) 
+        pygame.draw.polygon(screen, color, poly_points) 
 
-        if hasattr(self, 'sensor'): 
+        if hasattr(self, 'sensor') and draw_sensor: 
             self.sensor.draw(screen)
         
     def move(self):
