@@ -47,8 +47,6 @@ class Car:
         self.height = height
         self.color = color
         self.control_type = control_type
-        self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        self.image.fill(self.color)
 
         self.speed = 0
         self.acceleration = 0.5
@@ -63,7 +61,7 @@ class Car:
 
         self.controls = Controls(control_type)
 
-        if control_type is "AGENT":
+        if control_type == "AGENT":
             self.sensor = Sensor(self)
             self.use_brain = True
             self.brain = NeuralNetwork(
@@ -168,7 +166,7 @@ class Car:
         '''
 
         if self.damaged:
-            self.color = (255, 0, 0)
+            self.color = (255, 0, 0, 128)
     
         poly_points = [
             (self.polygon[0]["x"], self.polygon[0]["y"]), 
@@ -219,9 +217,9 @@ class Car:
         self.x -= math.sin(math.radians(self.angle))*self.speed
 
         # Moves the dummy car by updating its y position
-        # If we update it for the agents car too then the car could move out of the screen so we essentially lock the y position for it
-        if self.control_type == "DUMMY":
-            self.y -= math.cos(math.radians(self.angle))*self.speed 
+        # If we update it for the agents main car too then the car could move out of the screen so we essentially lock the y position for it
+        #if self.control_type == "DUMMY":
+        self.y -= math.cos(math.radians(self.angle))*self.speed 
 
 
         
