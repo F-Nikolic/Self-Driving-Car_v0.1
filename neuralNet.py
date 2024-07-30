@@ -2,6 +2,8 @@ import random
 import pygame
 import json
 import os
+import random
+from utils import Utils
 from visualizer import Visualizer
 
 class NeuralNetwork:
@@ -48,6 +50,30 @@ class NeuralNetwork:
                 outputs, network.levels[i]
             )
         return outputs
+    
+    def mutate(network, amount=1):
+        """
+        Mutates the biases and weights by using linear interpolation
+
+        Args:
+            network (NeuralNetwork): The network whose biases and weights are mutated
+            amount (int): The percent by how much the new values are going to differ; by defaul 1 (100%)
+        """
+
+        for level in network.levels:
+            for i in range(len(level.biases)):
+                level.biases[i] = Utils.lerp(
+                    level.biases[i],
+                    random.uniform(-1, 1),
+                    amount
+                )
+            for i in range(len(level.weights)):
+                for j in range(len(level.weights[i])):
+                    level.weights[i][j] = Utils.lerp(
+                        level.weights[i][j],
+                        random.uniform(-1, 1),
+                        amount
+                    )
     
     def draw_debug(screen, x, width, height, network):
         """

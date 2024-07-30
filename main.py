@@ -35,11 +35,19 @@ def main():
 
     #Load model if exists
     if os.path.exists("model.json"):
-        NeuralNetwork.load_model(best_car, "model.json")
+        for i in range(0, len(cars)):
+            NeuralNetwork.load_model(cars[i], "model.json")
+        if i != 0:
+            NeuralNetwork.mutate(cars[i].brain, 0.1)
 
     # Traffic instance
     traffic = [
-        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY"),
+        Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 800), 30, 50, "DUMMY")
     ]
     
     # Button instance
