@@ -66,6 +66,7 @@ def main():
 
         car.draw(screen)
 
+        # Debug and visualization for the neural network
         NeuralNetwork.draw_debug(screen, ROAD_WIDTH+70, SCREEN_WIDTH/1.75, SCREEN_HEIGHT, car.brain)
 
         pygame.display.flip()
