@@ -1,9 +1,11 @@
 import pygame
 import sys
 import random
+import os
 from car import Car
 from road import Road
 from neuralNet import NeuralNetwork
+from buttons import Button
 
 def main():
     """
@@ -27,13 +29,22 @@ def main():
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instances
-    n = 10
+    n = 100
     cars = generate_cars(n, road, "AGENT")
+    best_car = cars[0]
+
+    #Load model if exists
+    if os.path.exists("model.json"):
+        NeuralNetwork.load_model(best_car, "model.json")
 
     # Traffic instance
     traffic = [
         Car(road.get_lane_center(random.randrange(0, 2), 30), random.randrange(0, 550), 30, 50, "DUMMY"),
     ]
+    
+    # Button instance
+    save_button = Button("Save Model", 0, 0, 200, 50, lambda: NeuralNetwork.save_model(best_car, 'model.json'))
+    discard_button = Button("Delete Model", 250, 0, 200, 50, lambda: NeuralNetwork.delete_model('model.json'))
 
     # Game loop
     running = True
@@ -47,7 +58,9 @@ def main():
                 if event.key == pygame.K_r:
                     running = False
                     main()
-
+            save_button.handle_event(event)
+            discard_button.handle_event(event)
+                   
         for traffic_car in traffic:
             traffic_car.update(road.borders,[])
         for agent_car in cars:
@@ -72,6 +85,9 @@ def main():
             cars[i].y += road.scroll_speed
             cars[i].draw(screen, (255, 255, 0))
         best_car.draw(screen, (0, 255, 0), True)
+
+        save_button.draw(screen)
+        discard_button.draw(screen)
 
         # Debug and visualization for the neural network
         NeuralNetwork.draw_debug(screen, ROAD_WIDTH+70, SCREEN_WIDTH/1.75, SCREEN_HEIGHT, best_car.brain)

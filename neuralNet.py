@@ -1,5 +1,7 @@
 import random
 import pygame
+import json
+import os
 from visualizer import Visualizer
 
 class NeuralNetwork:
@@ -61,6 +63,75 @@ class NeuralNetwork:
 
         pygame.draw.rect(screen, (0, 0, 0), (x, 0, width, height))
         Visualizer.draw_network(screen, network, width, x)
+
+    def save_model(best_car, file_path):
+        """
+        Saves the training progress of the neural network
+
+        Args:
+            best_car (Car): The car with the current neural network
+            file_path (str): Path of the json file that stores the model
+        """
+
+        model_data = {'levels': []}
+        for level in best_car.brain.levels:
+            level_data = {
+                'inputs': level.inputs,
+                'outputs': level.outputs,
+                'weights': level.weights,
+                'biases': level.biases
+            }
+            model_data['levels'].append(level_data)
+        
+        json_string = json.dumps(model_data, indent=4)
+
+        with open(file_path, 'w') as f:
+            json.dump(model_data, f)
+        print("Saved model!")
+
+    def load_model(best_car, file_path):
+        """
+        Saves the training progress of the neural network
+
+        Args:
+            best_car (Car): The car to load the network in
+            file_path (str): Path of the json file that stores the model
+        """
+
+        brain = best_car.brain
+
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                model_data = json.load(f)
+            
+            for level, level_data in zip(brain.levels, model_data['levels']):
+                level.inputs = level_data['inputs']
+                level.outputs = level_data['outputs']
+                level.weights = level_data['weights']
+                level.biases = level_data['biases']
+            print(f"Model loaded from '{file_path}'.")
+        else:
+            print(f"Model file '{file_path}' does not exist.")
+
+    def delete_model(file_path):
+        """
+        Saves the training progress of the neural network
+
+        Args:
+            best_car (Car): The car with the current neural network
+            file_path (str): Path of the json file that stores the model
+            
+        Raises:
+            FileNotFoundError: The file does not exist
+            Exception: Some other problem occured
+        """
+        try:
+            os.remove(file_path)
+            print(f"Model file '{file_path}' has been deleted.")
+        except FileNotFoundError:
+            print(f"Model file '{file_path}' not found.")
+        except Exception as e:
+            print(f"An error occurred while deleting the model file: {e}")
         
       
 class Level:
