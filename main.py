@@ -3,6 +3,7 @@ import sys
 import random
 from car import Car
 from road import Road
+from neuralNet import NeuralNetwork
 
 def main():
     """
@@ -11,7 +12,7 @@ def main():
 
     pygame.init()
 
-    # Screen settings
+    # car screen settings
     SCREEN_HEIGHT = 700
     SCREEN_WIDTH = 900
     SCREEN_BGCOLOR = (100, 100, 100)
@@ -21,8 +22,8 @@ def main():
 
     # Road instance
     ROAD_WIDTH = SCREEN_WIDTH/3
-    ROAD_CENTER = (SCREEN_WIDTH - ROAD_WIDTH)//2
-    LINE_CENTER = SCREEN_WIDTH/2
+    ROAD_CENTER = 50
+    LINE_CENTER = ROAD_WIDTH/2 + ROAD_CENTER
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instance
@@ -60,6 +61,8 @@ def main():
             traffic_car.draw(screen)
 
         car.draw(screen)
+
+        NeuralNetwork.draw_debug(screen, ROAD_WIDTH+70, SCREEN_WIDTH/1.75, SCREEN_HEIGHT, car.brain)
 
         pygame.display.flip()
 

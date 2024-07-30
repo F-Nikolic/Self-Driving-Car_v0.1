@@ -59,12 +59,13 @@ class Car:
 
         self.damaged = False
 
-        self.use_brain = control_type is "AGENT"
+        self.use_brain = False
 
         self.controls = Controls(control_type)
 
-        if control_type != "DUMMY":
+        if control_type is "AGENT":
             self.sensor = Sensor(self)
+            self.use_brain = True
             self.brain = NeuralNetwork(
                 [self.sensor.ray_count, 6, 4]
             )
@@ -95,14 +96,15 @@ class Car:
             offsets = [0 if x is None else 1 - x["offset"] for x in self.sensor.detections] # If object is far away, neurons receive low values and higher values close to 1 if the object is close 
             # Feed forward the signals and receive proper outputs to control the car
             outputs = NeuralNetwork.feed_forward(offsets, self.brain)
-            print(outputs)
 
             # If the car is an agent then control the car using the received outputs from the NN
-            if self.brain:
+            if self.use_brain:
                 self.controls.forward = outputs[0]
                 self.controls.left = outputs[1]
                 self.controls.right = outputs[2]
                 self.controls.reverse = outputs[3]
+            
+            print(outputs)
     
 
 

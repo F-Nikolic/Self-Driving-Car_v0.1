@@ -1,4 +1,6 @@
 import random
+import pygame
+from visualizer import Visualizer
 
 class NeuralNetwork:
     def __init__(self, neuron_counts):
@@ -18,6 +20,11 @@ class NeuralNetwork:
                 outputs, network.levels[i]
             )
         return outputs
+    
+    def draw_debug(screen, x, width, height, network):
+        pygame.draw.rect(screen, (0, 0, 0), (x, 0, width, height))
+        Visualizer.draw_network(screen, network)
+        
       
 class Level:
     def __init__(self, input_count, output_count):
@@ -32,10 +39,10 @@ class Level:
     def randomize(level):
         for i in range(len(level.inputs)):
             for j in range(len(level.outputs)): 
-                level.weights[i][j] = random.randint(-1, 1) # Negative values to help decide which way to turn 
+                level.weights[i][j] = random.uniform(-1, 1) # Negative values to help decide which way to turn 
         
         for i in range(len(level.biases)):
-            level.biases[i] = random.randint(-1, 1)
+            level.biases[i] = random.uniform(-1, 1)
 
     def feed_forward(given_inputs, level):
         for i in range(len(level.inputs)):

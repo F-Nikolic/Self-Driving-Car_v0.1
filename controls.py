@@ -28,7 +28,7 @@ class Controls:
         on every frame and thus sets the control values accordingly.
         """
 
-        if self.control_type == "AGENT":
+        if self.control_type is "AGENT" or self.control_type is "USER":
             keys_pressed = pygame.key.get_pressed() 
 
             if keys_pressed[pygame.K_w]:
@@ -40,7 +40,7 @@ class Controls:
             if keys_pressed[pygame.K_d]:
                 self.right = True
             self.reset_controls(keys_pressed)
-        else:
+        elif self.control_type is "DUMMY":
              self.forward = True
 
     def reset_controls(self, keys_pressed):
