@@ -87,9 +87,9 @@ class Road:
         line_width = 5
 
         # Draws the road itself
-        pygame.draw.rect(screen, (169, 169, 169), (self.x, 0, self.width, self.height))
+        road = pygame.draw.rect(screen, (169, 169, 169), (self.x, 0, self.width, self.height))
        
-       # Draws the dashed lines
+       # Draw the dashed lines
         for i in range(self.lane_count + 1):
             # Uses linear interpolation to determine the x value of the dashed lines
             x = Utils.lerp(
@@ -97,14 +97,15 @@ class Road:
                 self.right,
                 i / self.lane_count
             )
+        
             y = self.scroll % (self.dash_length + self.dash_gap) - self.dash_length - self.dash_gap
             while y < self.height:
                 pygame.draw.line(screen, (255, 255, 255), (x, y), (x, y + self.dash_length), line_width)
                 y += self.dash_length + self.dash_gap
         
-        # Draws the border lines
+        # Draw the border lines
         for border in self.borders:
-            pygame.draw.line(screen, (255, 255, 255), (border[0]["x"], border[0]["y"]), (border[1]["x"], border[1]["y"]), line_width)
+            pygame.draw.line(screen, (255, 255, 255), (border[0]["x"], border[0]["y"]), (border[1]["x"], (border[1]["y"])), line_width)
 
         # Simulates the scroll effect
         self.scroll += self.scroll_speed

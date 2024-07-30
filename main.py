@@ -27,7 +27,7 @@ def main():
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instances
-    n = 5
+    n = 10
     cars = generate_cars(n, road, "AGENT")
 
     # Traffic instance
@@ -69,6 +69,7 @@ def main():
             traffic_car.y += road.scroll_speed # Simulates overtaking effect by adjusting the traffic cars y position relevant to the scroll speed
             traffic_car.draw(screen, (0, 0, 255))
         for i in range(1, len(cars)):
+            cars[i].y += road.scroll_speed
             cars[i].draw(screen, (255, 255, 0))
         best_car.draw(screen, (0, 255, 0), True)
 

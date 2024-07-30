@@ -81,6 +81,7 @@ class Car:
             self.polygon = self.create_polygon()
             self.damaged = self.check_damaged(road_borders, traffic)
         else:
+            self.polygon = self.create_polygon()
             self.speed = 0
         self.controls.handle_controls()
 
@@ -213,10 +214,6 @@ class Car:
 
         # Updates the position of the car based on angle and speed
         self.x -= math.sin(math.radians(self.angle))*self.speed
-
-        # Moves the dummy car by updating its y position
-        # If we update it for the agents main car too then the car could move out of the screen so we essentially lock the y position for it
-        #if self.control_type == "DUMMY":
         self.y -= math.cos(math.radians(self.angle))*self.speed 
 
 
