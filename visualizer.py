@@ -18,7 +18,7 @@ class Visualizer:
         """
 
         margin = 50
-        left = nn_screen_left
+        left = nn_screen_left + margin
         top = margin
         screen_width, screen_height = screen.get_size()
         height = screen_height-margin*2
@@ -40,7 +40,7 @@ class Visualizer:
                 network.levels[i],
                 left,
                 level_top,
-                width,
+                width - margin*2,
                 level_height,
                 ['W','A','D','S'] if i == len(network.levels) - 1 else [])
 
@@ -153,7 +153,6 @@ def get_RGB(value):
         value (int): The value of the node
     """
 
-    a = abs(value)
     G = 0 if value <= 0 else 255
     R = 0 if value > 0 else 255
     B = 0 
