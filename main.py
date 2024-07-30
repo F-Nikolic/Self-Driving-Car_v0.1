@@ -29,7 +29,7 @@ def main():
     road = Road(ROAD_CENTER, ROAD_WIDTH, LINE_CENTER, SCREEN_HEIGHT, 3)
 
     # Car agent instances
-    n = 200
+    n = 50
     cars = generate_cars(n, road, "AGENT")
     best_car = cars[0]
 
@@ -76,6 +76,7 @@ def main():
             save_button.handle_event(event)
             discard_button.handle_event(event)
                    
+        # Update agent and traffic cars
         for traffic_car in traffic:
             traffic_car.update(road.borders,[])
         for agent_car in cars:
@@ -84,7 +85,7 @@ def main():
         # Find the minimum y value among all cars
         min_y = min(car.y for car in cars)
 
-        # Find the car(s) with the minimum y value
+        # Find the cars with the minimum y value
         best_car = next(car for car in cars if car.y == min_y)
 
         road.scroll_speed = best_car.speed
@@ -93,6 +94,7 @@ def main():
 
         road.draw(screen)
 
+        # Draw the cars
         for traffic_car in traffic:
             traffic_car.y += road.scroll_speed # Simulates overtaking effect by adjusting the traffic cars y position relevant to the scroll speed
             traffic_car.draw(screen, (0, 0, 255,0))
@@ -101,6 +103,7 @@ def main():
             cars[i].draw(screen, (255, 255, 0, 150))
         best_car.draw(screen, (0, 255, 0), True)
 
+        # Draw the buttons
         save_button.draw(screen)
         discard_button.draw(screen)
 
