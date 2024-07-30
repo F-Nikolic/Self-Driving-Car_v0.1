@@ -2,12 +2,11 @@ import pygame
 from utils import Utils
 
 class Visualizer:
-    def draw_network(screen, network):
+    def draw_network(screen, network, width, nn_screen_left):
         margin = 50
-        left = margin
+        left = nn_screen_left
         top = margin
         screen_width, screen_height = screen.get_size()
-        width = screen_width-margin*2
         height = screen_height-margin*2
 
         level_height = height / len(network.levels)
@@ -38,31 +37,30 @@ class Visualizer:
             for j in range(len(outputs)):  
                 pygame.draw.line(screen, get_RGB(weights[i][j]), 
                                  (Visualizer.get_node_X(inputs,i,left,right), bottom), 
-                                 (Visualizer.get_node_X(inputs,i,left,right), top), 2)
+                                 (Visualizer.get_node_X(outputs,j,left,right), top), 2)
         
         node_radius=18
         for i in range(len(inputs)):  
             x = Visualizer.get_node_X(inputs,i,left,right);
             
-            pygame.draw.circle(screen, (0, 0, 0), (x, bottom), node_radius)
+            #pygame.draw.circle(screen, (255, 255, 255), (x, bottom), node_radius)
             pygame.draw.circle(screen, get_RGB(inputs[i]), (x, bottom), node_radius*0.6)
         
         for i in range(len(outputs)): 
             x = Visualizer.get_node_X(outputs,i,left,right);
-            pygame.draw.circle(screen, (0, 0, 0), (x, top), node_radius)
+            #pygame.draw.circle(screen, (255, 255, 255), (x, top), node_radius)
             pygame.draw.circle(screen, get_RGB(outputs[i]), (x, top), node_radius*0.6)
-
             pygame.draw.circle(screen, get_RGB(biases[i]), (x, top), node_radius*0.8)
          
             if output_labels and i < len(output_labels):
                 if output_labels[i]:
                     # Set up the font
                     font_size = round(node_radius*1.5)
-                    font = pygame.font.Font(None, font_size)  # None uses the default font
+                    font = pygame.font.Font(None, font_size) 
 
                     # Render the text
                     text = output_labels[i]
-                    text_surface = font.render(text, True, (0, 0, 0))  # True for anti-aliasing
+                    text_surface = font.render(text, True, (0, 0, 0)) 
 
                     # Get the text rectangle and position it
                     text_rect = text_surface.get_rect()
@@ -79,7 +77,8 @@ class Visualizer:
            
 
 def get_RGB(value):
-    R = 0 if value < 0 else 255
+    a = abs(value)
+    R = 0 if value <= 0 else 255
     G = R
     B = 0 if value > 0 else 255
     return (R, G, B)

@@ -23,7 +23,7 @@ class NeuralNetwork:
     
     def draw_debug(screen, x, width, height, network):
         pygame.draw.rect(screen, (0, 0, 0), (x, 0, width, height))
-        Visualizer.draw_network(screen, network)
+        Visualizer.draw_network(screen, network, width, x)
         
       
 class Level:

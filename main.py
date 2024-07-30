@@ -13,8 +13,8 @@ def main():
     pygame.init()
 
     # car screen settings
-    SCREEN_HEIGHT = 700
-    SCREEN_WIDTH = 900
+    SCREEN_HEIGHT = 800
+    SCREEN_WIDTH = 1100
     SCREEN_BGCOLOR = (100, 100, 100)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -44,6 +44,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    running = False
+                    main()
 
         for traffic_car in traffic:
             traffic_car.update(road.borders,[])
