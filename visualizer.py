@@ -31,26 +31,32 @@ class Visualizer:
         right = left + width
         bottom = top + height
 
-        inputs, outputs, weights, biases = level.inputs, level.outputs, level.weights, level.biases
+        inputs, outputs, biases, weights = level.inputs, level.outputs, level.biases, level.weights
+
+        print(outputs)
 
         for i in range(len(inputs)):  
             for j in range(len(outputs)):  
+                start_pos = (Visualizer.get_node_X(inputs,i,left,right), bottom)
+                end_pos = (Visualizer.get_node_X(outputs,j,left,right), top)
+                draw_dashed_line(screen, get_RGB(weights[i][j]), start_pos, end_pos, 7, 3)
+                """
                 pygame.draw.line(screen, get_RGB(weights[i][j]), 
                                  (Visualizer.get_node_X(inputs,i,left,right), bottom), 
-                                 (Visualizer.get_node_X(outputs,j,left,right), top), 2)
+                                 (Visualizer.get_node_X(outputs,j,left,right), top), 2)"""
         
         node_radius=18
         for i in range(len(inputs)):  
             x = Visualizer.get_node_X(inputs,i,left,right);
             
-            #pygame.draw.circle(screen, (255, 255, 255), (x, bottom), node_radius)
-            pygame.draw.circle(screen, get_RGB(inputs[i]), (x, bottom), node_radius*0.6)
+            pygame.draw.circle(screen, (0, 0, 0), (x, bottom), node_radius)
+            pygame.draw.circle(screen, get_RGB(inputs[i]), (x, bottom), node_radius*0.8)
         
         for i in range(len(outputs)): 
             x = Visualizer.get_node_X(outputs,i,left,right);
-            #pygame.draw.circle(screen, (255, 255, 255), (x, top), node_radius)
-            pygame.draw.circle(screen, get_RGB(outputs[i]), (x, top), node_radius*0.6)
-            pygame.draw.circle(screen, get_RGB(biases[i]), (x, top), node_radius*0.8)
+            pygame.draw.circle(screen, (0, 0, 0), (x, top), node_radius*1.2)
+            pygame.draw.circle(screen, get_RGB(outputs[i]), (x, top), node_radius)
+            #pygame.draw.circle(screen, get_RGB(biases[i]), (x, top), node_radius)
          
             if output_labels and i < len(output_labels):
                 if output_labels[i]:
@@ -67,18 +73,45 @@ class Visualizer:
                     text_rect.center = (x, top)
                     screen.blit(text_surface, text_rect)
 
-
- 
     def get_node_X(nodes, index, left, right):
         return Utils.lerp(
             left,
             right,
             0.5 if len(nodes) == 1 else index/(len(nodes)-1))
-           
+    
+def draw_dashed_line(surface, color, start_pos, end_pos, dash_length, space_length):
+    """
+    Draws a dashed line on the surface from start_pos to end_pos.
+    
+    Args:
+        surface (pygame.Surface): The surface to draw on.
+        color (tuple): The color of the line (R, G, B).
+        start_pos (tuple): The starting position of the line (x, y).
+        end_pos (tuple): The ending position of the line (x, y).
+        dash_length (int): Length of each dash.
+        space_length (int): Length of space between dashes.
+    """
+    # Calculate the total length of the line
+    total_length = ((end_pos[0] - start_pos[0]) ** 2 + (end_pos[1] - start_pos[1]) ** 2) ** 0.5
 
+    # Calculate the number of dashes
+    num_dashes = int(total_length / (dash_length + space_length))
+    
+    # Calculate direction vector
+    dx = (end_pos[0] - start_pos[0]) / total_length
+    dy = (end_pos[1] - start_pos[1]) / total_length
+    
+    # Draw the dashes
+    for i in range(num_dashes):
+        start_dash_x = start_pos[0] + i * (dash_length + space_length) * dx
+        start_dash_y = start_pos[1] + i * (dash_length + space_length) * dy
+        end_dash_x = start_dash_x + dash_length * dx
+        end_dash_y = start_dash_y + dash_length * dy
+        pygame.draw.line(surface, color, (start_dash_x, start_dash_y), (end_dash_x, end_dash_y), 2)
+           
 def get_RGB(value):
     a = abs(value)
-    R = 0 if value <= 0 else 255
-    G = R
-    B = 0 if value > 0 else 255
+    G = 0 if value <= 0 else 255
+    R = 0 if value > 0 else 255
+    B = 0 
     return (R, G, B)

@@ -103,10 +103,6 @@ class Car:
                 self.controls.left = outputs[1]
                 self.controls.right = outputs[2]
                 self.controls.reverse = outputs[3]
-            
-            print(outputs)
-    
-
 
     def check_damaged(self, road_borders, traffic):
         """
