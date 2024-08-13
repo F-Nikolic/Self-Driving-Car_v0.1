@@ -47,20 +47,17 @@ cd Self-Driving-Car_v0.1
 ### Step 2: Open Anaconda Prompt
 To avoid any compatibility issues, we recommend to use the anaconda prompt that comes with your installation of Anaconda.
 
-### Step 3: Create a new conda environment
+### Step 3: Create a new conda environment and install the dependencies from 'requirements.txt'
 Create a new conda environment "myenv" is the name of your environment which you are free to adjust.
 ```bash
-conda create --name myenv 
+conda create --name myenv --file requirements.txt
 ```
+
 ### Step 4: Activate the conda environment
 ```bash
 conda activate myenv
 ```
-### Step 5: Install dependencies from 'requirements.txt'
-Install all required dependencies using pip:
-```bash
-pip install -r requirements.txt
-```
+
 
 ## Usage
 
